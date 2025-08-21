@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "libs/ui/tailwind.config.js",
+    "css": "libs/ui/src/styles/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "aliases": {
+    "components": "@denki-desk/ui",
+    "utils": "@denki-desk/utils",
+    "ui": "@denki-desk/ui"
+  }
+}
