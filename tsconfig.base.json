@@ -18,7 +18,8 @@
       "@denki-desk/ui": ["libs/ui/src/ui"],
       "@denki-desk/ui/*": ["libs/ui/src/ui/*"],
       "@denki-desk/styles/*": ["libs/ui/src/styles/*"],
-      "@denki-desk/utils": ["libs/utils/src/index.ts"]
+      "@denki-desk/hooks/*": ["libs/ui/src/hooks/*"],
+      "@denki-desk/utils": ["libs/utils/src/index.ts"],
     }
   },
   "exclude": ["node_modules", "tmp"]
