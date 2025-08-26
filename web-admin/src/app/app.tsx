@@ -1,7 +1,7 @@
-import { Dashboard } from '../features/dashboard';
+import { Items } from '../features/items';
 
 export function App() {
-  return <Dashboard />;
+  return <Items />;
 }
 
 export default App;

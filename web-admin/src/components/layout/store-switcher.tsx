@@ -44,7 +44,6 @@ export function StoreSwitcher({ stores }: StoreSwitcherProps) {
                 <span className="truncate font-semibold">
                   {activeStore.name}
                 </span>
-                <span className="truncate text-xs">{activeStore.plan}</span>
               </div>
               <ChevronsUpDown className="ms-auto" />
             </SidebarMenuButton>

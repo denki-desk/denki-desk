@@ -11,10 +11,11 @@ export function Header({
   return (
     <header className={cn('z-50 h-16', className)} {...props}>
       <div
-        className={cn('relative flex h-full items-center gap-3 p-4 sm:gap-4')}
+        className={cn(
+          'relative flex h-full items-center gap-3 p-4 sm:gap-4 border-b'
+        )}
       >
         <SidebarTrigger variant="outline" className="max-md:scale-125" />
-        <Separator orientation="vertical" className="h-6" />
         {children}
       </div>
     </header>
