@@ -1,4 +1,5 @@
 import { ElementType } from 'react';
+import { LinkProps } from '@tanstack/react-router';
 
 type User = {
   name: string;
@@ -19,13 +20,15 @@ type BaseNavItem = {
 };
 
 type NavLink = BaseNavItem & {
-  url: string & {};
+  url: LinkProps['to'] | (string & {});
   items?: never;
+  disabled?: boolean;
 };
 
 type NavCollapsible = BaseNavItem & {
-  items: (BaseNavItem & { url: string & {} })[];
+  items: (BaseNavItem & { url: LinkProps['to'] | (string & {}) })[];
   url?: never;
+  disabled?: boolean;
 };
 
 type NavItem = NavCollapsible | NavLink;
@@ -33,6 +36,7 @@ type NavItem = NavCollapsible | NavLink;
 type NavGroup = {
   title: string;
   items: NavItem[];
+  disabled?: boolean;
 };
 
 type SidebarData = {

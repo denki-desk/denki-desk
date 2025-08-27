@@ -1,4 +1,4 @@
-import { ElementType, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { ChevronRight } from 'lucide-react';
 import {
   Collapsible,
@@ -31,10 +31,11 @@ import {
   type NavLink,
   type NavGroup as NavGroupProps,
 } from './types';
+import { Link, useLocation } from '@tanstack/react-router';
 
 export function NavGroup({ title, items }: NavGroupProps) {
   const { state, isMobile } = useSidebar();
-  const href = '/dashboard';
+  const href = useLocation({ select: (location) => location.href });
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{title}</SidebarGroupLabel>
@@ -73,11 +74,15 @@ function SidebarMenuLink({ item, href }: { item: NavLink; href: string }) {
         tooltip={item.title}
         className={isActive ? '' : 'text-muted-foreground'}
       >
-        <a href={item.url} onClick={() => setOpenMobile(false)}>
+        <Link
+          to={item.url}
+          onClick={() => setOpenMobile(false)}
+          disabled={item.disabled}
+        >
           {item.icon && <item.icon />}
           <span>{item.title}</span>
           {item.badge && <NavBadge>{item.badge}</NavBadge>}
-        </a>
+        </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>
   );
@@ -115,11 +120,11 @@ function SidebarMenuCollapsible({
                   asChild
                   isActive={checkIsActive(href, subItem)}
                 >
-                  <a href={subItem.url} onClick={() => setOpenMobile(false)}>
+                  <Link to={subItem.url} onClick={() => setOpenMobile(false)}>
                     {subItem.icon && <subItem.icon />}
                     <span>{subItem.title}</span>
                     {subItem.badge && <NavBadge>{subItem.badge}</NavBadge>}
-                  </a>
+                  </Link>
                 </SidebarMenuSubButton>
               </SidebarMenuSubItem>
             ))}
@@ -158,8 +163,8 @@ function SidebarMenuCollapsedDropdown({
           <DropdownMenuSeparator />
           {item.items.map((sub) => (
             <DropdownMenuItem key={`${sub.title}-${sub.url}`} asChild>
-              <a
-                href={sub.url}
+              <Link
+                to={sub.url}
                 className={`${checkIsActive(href, sub) ? 'bg-secondary' : ''}`}
               >
                 {sub.icon && <sub.icon />}
@@ -167,7 +172,7 @@ function SidebarMenuCollapsedDropdown({
                 {sub.badge && (
                   <span className="ms-auto text-xs">{sub.badge}</span>
                 )}
-              </a>
+              </Link>
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
@@ -178,7 +183,7 @@ function SidebarMenuCollapsedDropdown({
 
 function checkIsActive(href: string, item: NavItem, mainNav = false) {
   return (
-    href === item.url || // /endpint?search=param
+    href === item.url || // /endpoint?search=param
     href.split('?')[0] === item.url || // endpoint
     !!item?.items?.filter((i) => i.url === href).length || // if child nav is active
     (mainNav &&
