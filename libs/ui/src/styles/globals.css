@@ -33,11 +33,12 @@
     --success-hover: rgba(87, 179, 117, 0.04);
     --success-active: rgba(87, 179, 117, 0.12);
 
-    --chart-1: rgba(250, 249, 252, 0.12);
-    --chart-2: rgba(250, 249, 252, 0.32);
-    --chart-3: rgba(250, 249, 252, 0.42);
-    --chart-4: rgba(250, 249, 252, 0.52);
-    --chart-5: rgba(250, 249, 252, 0.62);
+    --chart-1: rgba(59, 130, 246, 0.8);
+    --chart-2: rgba(16, 185, 129, 0.8);
+    --chart-3: rgba(245, 158, 11, 0.8);
+    --chart-4: rgba(239, 68, 68, 0.8);
+    --chart-5: rgba(139, 92, 246, 0.8);
+
 
     /* Derived tokens */
     --background: var(--bg);
@@ -87,11 +88,20 @@
     --danger-rgb: 235, 76, 91;
     --success-rgb: 87, 179, 117;
 
-    --chart-1: rgba(17, 17, 17, 0.12);
-    --chart-2: rgba(17, 17, 17, 0.32);
-    --chart-3: rgba(17, 17, 17, 0.42);
-    --chart-4: rgba(17, 17, 17, 0.52);
-    --chart-5: rgba(17, 17, 17, 0.62);
+    --accent-hover: rgba(28, 27, 32, 0.12);
+    --accent-active: rgba(28, 27, 32, 0.32);
+    --danger-border: rgba(235, 76, 91, 0.4);
+    --danger-hover: rgba(235, 76, 91, 0.04);
+    --danger-active: rgba(235, 76, 91, 0.12);
+    --success-border: rgba(87, 179, 117, 0.4);
+    --success-hover: rgba(87, 179, 117, 0.04);
+    --success-active: rgba(87, 179, 117, 0.12);
+
+    --chart-1: rgba(96, 165, 250, 0.7);
+    --chart-2: rgba(52, 211, 153, 0.7);
+    --chart-3: rgba(251, 191, 36, 0.7);
+    --chart-4: rgba(248, 113, 113, 0.7);
+    --chart-5: rgba(167, 139, 250, 0.7);
   }
 }
 

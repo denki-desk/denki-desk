@@ -24,6 +24,11 @@ export function SelectDropdown<T extends Primitive = string>({
   placeholder,
   ...props
 }: SelectDropdownProps<T>) {
+  const toSentenceCase = (str: string) => {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
+
   return (
     <div className="relative">
       <Select {...props}>
@@ -37,7 +42,7 @@ export function SelectDropdown<T extends Primitive = string>({
 
             return (
               <SelectItem key={value.toString()} value={value.toString()}>
-                {label}
+                {toSentenceCase(label.toString())}
               </SelectItem>
             );
           })}

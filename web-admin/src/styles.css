@@ -13,3 +13,7 @@
   font-weight: 600;
   font-style: normal;
 }
+
+.eyebrow {
+  @apply uppercase tracking-wider text-xs;
+}
