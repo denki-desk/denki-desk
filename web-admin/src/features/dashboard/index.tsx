@@ -22,7 +22,7 @@ export function Dashboard() {
         </div>
       </Header>
       <Main className="space-y-4">
-        <Label className="mb-2">Dashboard</Label>
+        <Label className="mb-2">Overview</Label>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 px-4">
           <Card className="shadow-none">

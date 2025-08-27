@@ -24,9 +24,9 @@ module.exports = {
           DEFAULT: 'rgba(var(--primary), <alpha-value>)',
           foreground: 'rgba(var(--primary-foreground), <alpha-value>)',
         },
-        secondary: {
-          DEFAULT: 'rgba(var(--secondary), <alpha-value>)',
-          foreground: 'rgba(var(--secondary-foreground), <alpha-value>)',
+        success: {
+          DEFAULT: 'rgba(var(--success), <alpha-value>)',
+          foreground: 'rgba(var(--success-foreground), <alpha-value>)',
         },
         destructive: {
           DEFAULT: 'rgba(var(--destructive), <alpha-value>)',
@@ -61,11 +61,11 @@ module.exports = {
           ring: 'rgba(var(--sidebar-ring), <alpha-value>)',
         },
         chart: {
-          1: 'rgb(var(--chart-1) / <alpha-value>)',
-          2: 'rgb(var(--chart-2) / <alpha-value>)',
-          3: 'rgb(var(--chart-3) / <alpha-value>)',
-          4: 'rgb(var(--chart-4) / <alpha-value>)',
-          5: 'rgb(var(--chart-5) / <alpha-value>)',
+          1: 'var(--chart-1)',
+          2: 'var(--chart-2)',
+          3: 'var(--chart-3)',
+          4: 'var(--chart-4)',
+          5: 'var(--chart-5)',
         },
       },
       borderColor: {

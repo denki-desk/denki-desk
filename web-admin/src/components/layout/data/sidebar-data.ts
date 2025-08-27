@@ -7,6 +7,7 @@ import {
   ClipboardList,
   Users,
   BarChart3,
+  TrendingUp,
 } from 'lucide-react';
 import { SidebarData } from '../types';
 
@@ -18,14 +19,14 @@ export const sidebarData: SidebarData = {
   },
   stores: [
     {
-      name: 'Shoenen Kicks',
-      logo: Package, // maybe a sneaker icon later if you add one
-      plan: 'Enterprise',
+      name: 'Denki Desk',
+      logo: CalendarClock,
+      plan: 'Startup',
     },
     {
-      name: 'Denki Desk',
-      logo: CalendarClock, // rental vibe
-      plan: 'Startup',
+      name: 'Shoenen Kicks',
+      logo: Package,
+      plan: 'Enterprise',
     },
   ],
   navGroups: [
@@ -51,26 +52,31 @@ export const sidebarData: SidebarData = {
           title: 'Transactions',
           url: '/transactions',
           icon: Receipt,
+          disabled: true,
         },
         {
           title: 'Payments',
           url: '/payments',
           icon: Wallet,
+          disabled: true,
         },
         {
           title: 'Rentals',
           url: '/rentals',
           icon: CalendarClock,
+          disabled: true,
         },
         {
           title: 'Preorders',
           url: '/preorders',
           icon: ClipboardList,
+          disabled: true,
         },
         {
           title: 'Customers',
           url: '/customers',
           icon: Users,
+          disabled: true,
         },
       ],
     },
@@ -81,6 +87,12 @@ export const sidebarData: SidebarData = {
           title: 'Reports',
           url: '/reports',
           icon: BarChart3,
+          disabled: true,
+        },
+        {
+          title: 'Cash Flow',
+          url: '/cashflow',
+          icon: TrendingUp,
         },
       ],
     },
