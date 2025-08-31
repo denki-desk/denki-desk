@@ -1,6 +1,6 @@
 # DenkiDesk
 
-Welcome to **Project Name**!  
+Welcome to **DenkiDesk**!  
 This repository is an [Nx](https://nx.dev/) monorepo containing our **web-admin** app and shared libraries.
 
 ## 🚀 Getting Started
