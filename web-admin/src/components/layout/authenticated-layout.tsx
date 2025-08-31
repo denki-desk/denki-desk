@@ -13,6 +13,10 @@ import { StoreSwitcher } from './store-switcher';
 import { sidebarData } from './data/sidebar-data';
 import { NavGroup } from './nav-group';
 import { NavUser } from './nav-user';
+import { Outlet } from '@tanstack/react-router';
+import { Header } from './header';
+import { ThemeSwitch } from '../theme-switch';
+import { ProfileDropdown } from '../profile-dropdown';
 
 type AuthenticatedLayoutProps = {
   children?: ReactNode;
@@ -53,7 +57,13 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
           '@container/content'
         )}
       >
-        {children}
+        <Header>
+          <div className="ms-auto flex items-center space-x-4">
+            <ThemeSwitch />
+            <ProfileDropdown />
+          </div>
+        </Header>
+        {children ?? <Outlet />}
       </SidebarInset>
     </SidebarProvider>
   );

@@ -1,9 +1,5 @@
-import { Header } from '../../components/layout/header';
 import { Main } from '../../components/layout/main';
 import { Button } from '@denki-desk/ui/button';
-import { AuthenticatedLayout } from '../../components/layout/authenticated-layout';
-import { ProfileDropdown } from '../../components/profile-dropdown';
-import { ThemeSwitch } from '../../components/theme-switch';
 import { Label } from '../../components/ui/Label';
 import { Link } from '../../components/ui/Link';
 import {
@@ -29,6 +25,8 @@ import {
 } from '@denki-desk/ui/tooltip';
 import { SelectDropdown } from '../../components/ui/SelectDropdown';
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { type CashFlow as CashFlowType } from '../../types';
 
 const mockCashFlowData = [
   {
@@ -147,16 +145,19 @@ export function CashFlow() {
   const [activeTab, setActiveTab] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
 
+  const { data } = useQuery<CashFlowType[]>({
+    queryKey: ['cashflow'],
+    queryFn: async () => {
+      const res = await fetch('/cashflow');
+      if (!res.ok) throw new Error('Network response was not ok');
+      return res.json();
+    },
+  });
+
   const sources = [...new Set(mockCashFlowData.map((item) => item.source))];
   const categories = [
     ...new Set(mockCashFlowData.map((item) => item.category ?? 'unknown')),
   ];
-
-  const filteredCashFlow = mockCashFlowData.filter((item) => {
-    const matchesType = typeFilter === 'all' || item.type === typeFilter;
-
-    return matchesType;
-  });
 
   const handleClick = (type: string) => {
     setActiveTab(type);
@@ -164,172 +165,154 @@ export function CashFlow() {
   };
 
   return (
-    <AuthenticatedLayout>
-      <Header>
-        <div className="ms-auto flex items-center space-x-4">
-          <ThemeSwitch />
-          <ProfileDropdown />
-        </div>
-      </Header>
-      <Main>
-        <div className="flex items-stretch md:flex-row flex-col w-full h-full">
-          {/*CashFlow*/}
-          <div className="flex-1 grow min-w-0 h-full">
-            <div className="flex px-4 border-b space-x-3 min-w-max">
-              <button onClick={() => handleClick('all')}>
-                <Link text="Overview" isActive={activeTab === 'all'} />
-              </button>
-              <button onClick={() => handleClick('inflow')}>
-                <Link text="Inflow" isActive={activeTab === 'inflow'} />
-              </button>
-              <button onClick={() => handleClick('outflow')}>
-                <Link text="Outflow" isActive={activeTab === 'outflow'} />
-              </button>
-            </div>
-
-            <div className="flex items-center justify-between px-4 py-6 gap-2 gap-y-3">
-              <div className="flex gap-x-3">
-                <SelectDropdown
-                  defaultValue={sources[0]}
-                  options={sources}
-                  placeholder="Source"
-                />
-                <SelectDropdown
-                  defaultValue={categories[6]}
-                  options={categories}
-                  placeholder="Categories"
-                />
-              </div>
-              <div className="flex gap-x-3">
-                <Button variant="outline">Export</Button>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className="rounded-full"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>New Entry</TooltipContent>
-                </Tooltip>
-              </div>
-            </div>
-
-            <Label className="mb-2">Cash Flow</Label>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Source</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Method</TableHead>
-                  <TableHead>Note</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredCashFlow.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>
-                      {new Date(item.date).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{item.source}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      {item.category ? (
-                        <Badge variant="secondary">{item.category}</Badge>
-                      ) : (
-                        <span className="text-muted-foreground">-</span>
-                      )}
-                    </TableCell>
-                    <TableCell
-                      className={
-                        item.type === 'inflow'
-                          ? 'text-green-600'
-                          : 'text-red-600'
-                      }
-                    >
-                      {item.type === 'inflow' ? '+' : '-'}$
-                      {item.amount.toLocaleString()}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">{item.method}</Badge>
-                    </TableCell>
-                    <TableCell className="max-w-xs truncate">
-                      {item.note}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+    <Main>
+      <div className="flex items-stretch md:flex-row flex-col w-full h-full">
+        {/*CashFlow*/}
+        <div className="flex-1 grow min-w-0 h-full">
+          <div className="flex px-4 border-b space-x-3 min-w-max">
+            <button onClick={() => handleClick('all')}>
+              <Link text="Overview" isActive={activeTab === 'all'} />
+            </button>
+            <button onClick={() => handleClick('inflow')}>
+              <Link text="Inflow" isActive={activeTab === 'inflow'} />
+            </button>
+            <button onClick={() => handleClick('outflow')}>
+              <Link text="Outflow" isActive={activeTab === 'outflow'} />
+            </button>
           </div>
-          <div
-            className="relative max-md:!w-full shrink-0 md:h-full z-40 border-l-0 md:border-l md:block"
-            style={{ width: '340px' }}
-          >
-            <div className="h-full pb-10 flex flex-col space-y-4 p-4 pb-0 !h-auto">
-              {/*Result*/}
-              <div>
-                <h4 className="mb-2.5 eyebrow font-semibold leading-3 flex items-center gap-2">
-                  <GanttChartSquare className="h-4 w-4 text-muted-foreground" />
-                  Results
-                </h4>
 
-                <div className="flex flex-col gap-2">
-                  <div className="flex gap-2 border border-success rounded-lg px-3 py-2.5 last:mb-0 relative overflow-hidden items-center">
-                    <div
-                      className="absolute border-border inset-y-0 left-0 pointer-events-none -z-10 bg-success opacity-20"
-                      style={{
-                        width: '75%',
-                      }}
-                    />
-                    <TrendingUp className="text-success" />
-                    <div className="inline-block relative grow truncate">
-                      Inflow
-                    </div>
-                    <div>23,646</div>
-                    <div>75%</div>
-                  </div>
+          <div className="flex items-center justify-between px-4 py-6 gap-2 gap-y-3">
+            <div className="flex gap-x-3">
+              <SelectDropdown
+                defaultValue={sources[0]}
+                options={sources}
+                placeholder="Source"
+              />
+              <SelectDropdown
+                defaultValue={categories[6]}
+                options={categories}
+                placeholder="Categories"
+              />
+            </div>
+            <div className="flex gap-x-3">
+              <Button variant="outline">Export</Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    className="rounded-full"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>New Entry</TooltipContent>
+              </Tooltip>
+            </div>
+          </div>
 
-                  <div className="flex gap-2 border border-destructive rounded-lg px-3 py-2.5 last:mb-0 relative overflow-hidden items-center">
-                    <div
-                      className="absolute border-border inset-y-0 left-0 pointer-events-none -z-10 bg-destructive opacity-20"
-                      style={{
-                        width: '25%',
-                      }}
-                    />
-                    <TrendingDown className="text-destructive" />
-                    <div className="inline-block relative grow truncate">
-                      Outflow
-                    </div>
-                    <div>4,679</div>
-                    <div>25%</div>
-                  </div>
+          <Label className="mb-2">Cash Flow</Label>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Source</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Method</TableHead>
+                <TableHead>Note</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data?.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    {new Date(item.date).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{item.source}</Badge>
+                  </TableCell>
+                  <TableCell
+                    className={
+                      item.type === 'inflow' ? 'text-green-600' : 'text-red-600'
+                    }
+                  >
+                    {item.type === 'inflow' ? '+' : '-'}$
+                    {item.amount.toLocaleString()}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="secondary">{item.method}</Badge>
+                  </TableCell>
+                  <TableCell className="max-w-xs truncate">
+                    {item.note}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        <div
+          className="relative max-md:!w-full shrink-0 md:h-full z-40 border-l-0 md:border-l md:block"
+          style={{ width: '340px' }}
+        >
+          <div className="h-full pb-10 flex flex-col space-y-4 p-4 pb-0 !h-auto">
+            {/*Result*/}
+            <div>
+              <h4 className="mb-2.5 eyebrow font-semibold leading-3 flex items-center gap-2">
+                <GanttChartSquare className="h-4 w-4 text-muted-foreground" />
+                Results
+              </h4>
 
-                  <div className="flex gap-2 border border-muted-foreground rounded-lg px-3 py-2.5 last:mb-0 relative overflow-hidden items-center">
-                    <div
-                      className="absolute border-border inset-y-0 left-0 pointer-events-none -z-10 bg-muted-foreground opacity-20"
-                      style={{
-                        width: '90%',
-                      }}
-                    />
-                    <TrendingUpDown className="text-muted-foreground" />
-                    <div className="inline-block relative grow truncate">
-                      Netflow
-                    </div>
-                    <div>19,681</div>
-                    <div>+90%</div>
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2 border border-success rounded-lg px-3 py-2.5 last:mb-0 relative overflow-hidden items-center">
+                  <div
+                    className="absolute border-border inset-y-0 left-0 pointer-events-none -z-10 bg-success opacity-20"
+                    style={{
+                      width: '75%',
+                    }}
+                  />
+                  <TrendingUp className="text-success" />
+                  <div className="inline-block relative grow truncate">
+                    Inflow
                   </div>
+                  <div>23,646</div>
+                  <div>75%</div>
+                </div>
+
+                <div className="flex gap-2 border border-destructive rounded-lg px-3 py-2.5 last:mb-0 relative overflow-hidden items-center">
+                  <div
+                    className="absolute border-border inset-y-0 left-0 pointer-events-none -z-10 bg-destructive opacity-20"
+                    style={{
+                      width: '25%',
+                    }}
+                  />
+                  <TrendingDown className="text-destructive" />
+                  <div className="inline-block relative grow truncate">
+                    Outflow
+                  </div>
+                  <div>4,679</div>
+                  <div>25%</div>
+                </div>
+
+                <div className="flex gap-2 border border-muted-foreground rounded-lg px-3 py-2.5 last:mb-0 relative overflow-hidden items-center">
+                  <div
+                    className="absolute border-border inset-y-0 left-0 pointer-events-none -z-10 bg-muted-foreground opacity-20"
+                    style={{
+                      width: '90%',
+                    }}
+                  />
+                  <TrendingUpDown className="text-muted-foreground" />
+                  <div className="inline-block relative grow truncate">
+                    Netflow
+                  </div>
+                  <div>19,681</div>
+                  <div>+90%</div>
                 </div>
               </div>
-              {/*Todo: Timeline */}
             </div>
+            {/*Todo: Timeline */}
           </div>
         </div>
-      </Main>
-    </AuthenticatedLayout>
+      </div>
+    </Main>
   );
 }
