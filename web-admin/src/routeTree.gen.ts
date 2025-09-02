@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as authSignInRouteImport } from './routes/(auth)/sign-in'
 import { Route as AuthenticatedItemsIndexRouteImport } from './routes/_authenticated/items/index'
 import { Route as AuthenticatedCashflowIndexRouteImport } from './routes/_authenticated/cashflow/index'
 
@@ -22,6 +23,11 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const authSignInRoute = authSignInRouteImport.update({
+  id: '/(auth)/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedItemsIndexRoute = AuthenticatedItemsIndexRouteImport.update({
   id: '/items/',
@@ -36,11 +42,13 @@ const AuthenticatedCashflowIndexRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/sign-in': typeof authSignInRoute
   '/': typeof AuthenticatedIndexRoute
   '/cashflow': typeof AuthenticatedCashflowIndexRoute
   '/items': typeof AuthenticatedItemsIndexRoute
 }
 export interface FileRoutesByTo {
+  '/sign-in': typeof authSignInRoute
   '/': typeof AuthenticatedIndexRoute
   '/cashflow': typeof AuthenticatedCashflowIndexRoute
   '/items': typeof AuthenticatedItemsIndexRoute
@@ -48,18 +56,20 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/(auth)/sign-in': typeof authSignInRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/cashflow/': typeof AuthenticatedCashflowIndexRoute
   '/_authenticated/items/': typeof AuthenticatedItemsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cashflow' | '/items'
+  fullPaths: '/sign-in' | '/' | '/cashflow' | '/items'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cashflow' | '/items'
+  to: '/sign-in' | '/' | '/cashflow' | '/items'
   id:
     | '__root__'
     | '/_authenticated'
+    | '/(auth)/sign-in'
     | '/_authenticated/'
     | '/_authenticated/cashflow/'
     | '/_authenticated/items/'
@@ -67,6 +77,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  authSignInRoute: typeof authSignInRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -84,6 +95,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/(auth)/sign-in': {
+      id: '/(auth)/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof authSignInRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/items/': {
       id: '/_authenticated/items/'
@@ -119,6 +137,7 @@ const AuthenticatedRouteRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  authSignInRoute: authSignInRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
