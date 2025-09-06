@@ -1,14 +1,11 @@
 import { http, HttpResponse } from 'msw';
 import { db } from '../db';
-import { seedDatabase } from '../seed';
-
-// --- Seed initial data ---
-if (db.item.getAll().length === 0) {
-  seedDatabase();
-}
+import { authHandlers } from './auth';
 
 // --- Handlers ---
 export const handlers = [
+  ...authHandlers,
+
   // Items
   http.get('/items', () => {
     const items = db.item.getAll();
