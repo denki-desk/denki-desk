@@ -4,7 +4,7 @@ import { db } from './db';
 
 export const encode = (obj: any) => btoa(JSON.stringify(obj));
 
-export const decode = (str: string) => atob(JSON.stringify(str));
+export const decode = (str: string) => JSON.parse(atob(str));
 
 export const hash = (str: string) => {
   let hash = 5381,
