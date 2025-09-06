@@ -114,3 +114,14 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+
+/*UI kit*/
+.s-input {
+ @apply border border-border block w-full bg-muted focus:outline-none rounded-lg pt-[25px] mb-[14px] py-[7px] px-[15px];
+}
+
+.s-label {
+  @apply block absolute px-[15px] mb-1 mt-1 text-[17px] text-muted-foreground;
+}
+

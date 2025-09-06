@@ -7,6 +7,19 @@ export interface Store {
   type: string; // "sale" | "rental"
 }
 
+export interface User {
+  id: string;
+  username: string;
+  password: string; // for real backend, mock plain now
+  storeId: string; // FK -> store.id
+  name: string;
+  role: string; // 'admin' | 'cashier' | 'staff'
+  email: string;
+  phone: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
 export interface Item {
   id: string;
   storeId: string;
