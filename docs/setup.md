@@ -34,7 +34,8 @@ This project is an Nx monorepo. It allows us to manage multiple apps and librari
 3. Environment variables
 - Copy `.env.example` to .env 
    ```ini
-   VITE_API_URL=http://localhost:3000
+  VITE_APP_API_URL = 'https://api.denki-desk.com/v1'
+  VITE_APP_ENABLE_API_MOCKING = true
    ```
   
 ## ▶️ Running the App

@@ -17,12 +17,15 @@ import { Outlet } from '@tanstack/react-router';
 import { Header } from './header';
 import { ThemeSwitch } from '../theme-switch';
 import { ProfileDropdown } from '../profile-dropdown';
+import { useAuth } from '../../libs/auth';
 
 type AuthenticatedLayoutProps = {
   children?: ReactNode;
 };
 
 export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
+  const { user } = useAuth();
+
   // TODO: Get from cookie
   const defaultOpen = true;
 
@@ -38,7 +41,7 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
           ))}
         </SidebarContent>
         <SidebarFooter>
-          <NavUser user={sidebarData.user} />
+          <NavUser user={user} />
         </SidebarFooter>
         <SidebarRail />
       </AppSidebar>
