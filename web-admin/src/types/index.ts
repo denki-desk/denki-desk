@@ -16,6 +16,7 @@ export interface User {
   role: string; // 'admin' | 'cashier' | 'staff'
   email: string;
   phone: string;
+  imageUrl: string;
   createdAt: number;
   updatedAt: number;
 }

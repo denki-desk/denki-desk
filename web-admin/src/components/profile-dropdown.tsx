@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@denki-desk/ui/avatar';
 import { Button } from '@denki-desk/ui/button';
 import {
   DropdownMenu,
@@ -11,30 +10,27 @@ import {
 } from '@denki-desk/ui/dropdown-menu';
 import { useState } from 'react';
 import { SignOutDialog } from './sign-out-dialog';
+import { useAuth } from '../libs/auth';
+import { UserAvatar } from './ui/user-avatar';
 
 export function ProfileDropdown() {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
 
   return (
     <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-            <Avatar>
-              <AvatarImage
-                src="https://avatars.githubusercontent.com/u/41994701?v=4"
-                alt="@elpmid"
-              />
-              <AvatarFallback>EM</AvatarFallback>
-            </Avatar>
+            <UserAvatar user={user} />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col gap-1.5">
-              <p className="text-sm leading-none font-medium">elpmid</p>
+              <p className="text-sm leading-none font-medium">{user?.name}</p>
               <p className="text-muted-foreground text-xs leading-none">
-                elpmid@gmail.com
+                {user?.email}
               </p>
             </div>
           </DropdownMenuLabel>
