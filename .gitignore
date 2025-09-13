@@ -45,3 +45,20 @@ Thumbs.db
 
 vite.config.*.timestamp*
 vitest.config.*.timestamp*
+
+# Environment variables
+# Ignore all real .env files
+.env
+.env.*
+.env.local
+.env.*.local
+
+# Ignore per-app .env files (Nx apps live in apps/* or libs/*)
+apps/**/.env
+apps/**/.env.*
+apps/**/.env.local
+apps/**/.env.*.local
+
+# Allow non-sensitive templates
+!.env.example
+!apps/**/.env.example
