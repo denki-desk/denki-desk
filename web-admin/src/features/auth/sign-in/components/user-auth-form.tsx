@@ -1,4 +1,4 @@
-import { HTMLAttributes, useState } from 'react';
+import { HTMLAttributes } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,6 +13,10 @@ import {
 } from '@denki-desk/ui/form';
 import { Input } from '../../../../components/ui/Input';
 import { cn } from '@denki-desk/utils';
+import { useNavigate, useRouter } from '@tanstack/react-router';
+import { useAuth } from '../../../../libs/auth';
+
+const fallback = '/';
 
 const formSchema = z.object({
   email: z.email({
@@ -33,7 +37,9 @@ export function UserAuthForm({
   redirectTo,
   ...props
 }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const navigate = useNavigate();
+  const auth = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,8 +49,18 @@ export function UserAuthForm({
     },
   });
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    alert(data);
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    await auth.login.mutateAsync({
+      email: data.email,
+      password: data.password,
+    });
+    await router.invalidate();
+
+    const targetPath = redirectTo || fallback;
+    navigate({
+      to: targetPath,
+      replace: true,
+    });
   }
 
   return (
@@ -58,7 +74,7 @@ export function UserAuthForm({
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem className="relative">
+            <FormItem>
               <FormControl>
                 <Input
                   title="Email"
@@ -74,7 +90,7 @@ export function UserAuthForm({
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem className="relative">
+            <FormItem>
               <FormControl>
                 <Input
                   title="Password"
@@ -87,8 +103,8 @@ export function UserAuthForm({
             </FormItem>
           )}
         />
-        <Button className="mt-2" disabled={isLoading}>
-          {isLoading && <Loader2 className="animate-spin" />}
+        <Button className="mt-2" disabled={auth.login.isPending} type="submit">
+          {auth.login.isPending && <Loader2 className="animate-spin" />}
           Sign in
         </Button>
       </form>
