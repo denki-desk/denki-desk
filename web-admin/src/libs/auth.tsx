@@ -8,6 +8,8 @@ import {
 } from '@tanstack/react-query';
 import { api } from './api-client';
 import { Loader2 } from 'lucide-react';
+import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 
 export interface AuthContextValue {
   isAuthenticated: boolean;
@@ -42,6 +44,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await queryClient.invalidateQueries({
         queryKey: ['auth-user'],
       });
+    },
+    onError: async (error) => {
+      // Todo: create a separate ticket to handle error management
+      if (error instanceof AxiosError) {
+        const errMsg = error.response?.data.message || error.message;
+        toast.error(errMsg);
+      }
     },
   });
 
