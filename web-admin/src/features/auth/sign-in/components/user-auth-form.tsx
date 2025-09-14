@@ -19,13 +19,8 @@ import { useAuth } from '../../../../libs/auth';
 const fallback = '/';
 
 const formSchema = z.object({
-  email: z.email({
-    error: (iss) => (iss.input === '' ? 'Please enter your email' : undefined),
-  }),
-  password: z
-    .string()
-    .min(1, 'Please enter your password')
-    .min(7, 'Password must be at least 7 characters long'),
+  email: z.email('Please enter a valid email'),
+  password: z.string().min(1, 'Please enter your password'),
 });
 
 interface UserAuthFormProps extends HTMLAttributes<HTMLFormElement> {
