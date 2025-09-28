@@ -1,16 +1,12 @@
 import { http, HttpResponse } from 'msw';
 import { db } from '../db';
 import { authHandlers } from './auth';
+import { itemsHandlers } from './items';
 
 // --- Handlers ---
 export const handlers = [
   ...authHandlers,
-
-  // Items
-  http.get('/items', () => {
-    const items = db.item.getAll();
-    return HttpResponse.json(items);
-  }),
+  ...itemsHandlers,
 
   // Stores
   http.get('/stores', () => {

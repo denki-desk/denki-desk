@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@denki-desk/ui/table';
-import { Edit, Plus, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -18,17 +18,17 @@ import {
 import { SelectDropdown } from '../../components/ui/SelectDropdown';
 import { useQuery } from '@tanstack/react-query';
 import { Item } from '../../types';
+import { api } from '../../libs/api-client';
 
 const statuses = ['Active', 'Inactive', 'Out of Stock'];
 const categories = ['Shoes', 'Clothes', 'Accessories', 'Electronics', 'Other'];
 
 export function Items() {
-  const { data } = useQuery<Item[]>({
+  const { data } = useQuery<{ data: Item[] }>({
     queryKey: ['items'],
     queryFn: async () => {
-      const res = await fetch('/items');
-      if (!res.ok) throw new Error('Network response was not ok');
-      return res.json();
+      const res = await api.get('/items');
+      return res.data;
     },
   });
 
@@ -69,21 +69,18 @@ export function Items() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data?.map((item) => (
+          {data?.data.map((item) => (
             <TableRow key={item.id}>
-              <TableCell>{item.name}</TableCell>
-              <TableCell>{item.category}</TableCell>
-              <TableCell>${item.basePrice.toLocaleString()}</TableCell>
-              <TableCell>
-                <div className="flex justify-end items-center gap-2">
-                  <Button size="icon" variant="ghost" className="rounded-full">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button size="icon" variant="ghost" className="rounded-full">
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+              <TableCell className="w-2/3">
+                <div className="flex flex-col max-w-full items-start">
+                  <h4 className="truncate w-full">{item.name}</h4>
+                  <div className="text-sm text-muted-foreground w-full line-clamp-1">
+                    {item.description}
+                  </div>
                 </div>
               </TableCell>
+              <TableCell>{item.category}</TableCell>
+              <TableCell>${item.basePrice.toLocaleString()}</TableCell>
             </TableRow>
           ))}
         </TableBody>
