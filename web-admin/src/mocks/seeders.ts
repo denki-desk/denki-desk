@@ -26,7 +26,7 @@ export const createItem = (item: Overrides<Item>) => {
 };
 
 export const seedItems = () => {
-  const items = Array.from({ length: 30 }, () => generateItem());
+  const items = Array.from({ length: 200 }, () => generateItem());
   const createdItems = items.map((item) => createItem(item));
   persistDb('item');
   return createdItems;
