@@ -3,7 +3,7 @@ import {
   randNumber,
   randPassword,
   randPhoneNumber,
-  randProductCategory,
+  rand,
   randProductName,
   randSentence,
   randUserName,
@@ -12,6 +12,14 @@ import {
 import { Item, User } from '../types';
 
 export type Overrides<T> = Partial<T>;
+
+export const categories = [
+  'Shoes',
+  'Clothes',
+  'Accessories',
+  'Electronics',
+  'Other',
+];
 
 export const generateUser = (overrides?: Overrides<User>) => ({
   id: randUuid() + Math.random(),
@@ -31,7 +39,7 @@ export const generateItem = (overrides?: Overrides<Item>) => ({
   id: randUuid() + Math.random(),
   storeId: randEmail() + Math.random(),
   name: randProductName(),
-  category: randProductCategory(),
+  category: rand(categories),
   basePrice: randNumber({ min: 5, max: 1000 }),
   description: randSentence(),
   ...overrides,
