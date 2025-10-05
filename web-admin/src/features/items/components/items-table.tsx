@@ -1,11 +1,10 @@
-import { Plus, SearchIcon } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Button } from '@denki-desk/ui/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@denki-desk/ui/tooltip';
-import { SelectDropdown } from '../../../components/ui/SelectDropdown';
 import {
   Table,
   TableBody,
@@ -21,31 +20,47 @@ import { api } from '../../../libs/api-client';
 import { useMemo, useState } from 'react';
 import {
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
+  OnChangeFn,
   useReactTable,
 } from '@tanstack/react-table';
-
-const statuses = ['Active', 'Inactive', 'Out of Stock'];
-const categories = ['Shoes', 'Clothes', 'Accessories', 'Electronics', 'Other'];
+import { categories } from '../../../mocks/data-generators';
+import { DataTableToolbar } from '../../../components/data-table/toolbar';
 
 export const ItemsTable = () => {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
+  const columnFiltersCfg = [
+    { columnId: 'category', searchKey: 'category', type: 'string' },
+  ];
+
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [search, setSearch] = useState('');
+
+  const categoryFilter =
+    columnFilters.find((f) => f.id === 'category')?.value || '';
 
   const { data } = useQuery<{
     data: Item[];
     meta: { page: number; total: number; totalPages: number };
   }>({
-    queryKey: ['items', pagination.pageIndex, pagination.pageSize, search],
+    queryKey: [
+      'items',
+      pagination.pageIndex,
+      pagination.pageSize,
+      categoryFilter,
+      search,
+    ],
     queryFn: async () => {
       const res = await api.get('/items', {
         params: {
-          page: pagination.pageIndex + 1, // backend is usually 1-based
+          page: pagination.pageIndex + 1,
           limit: pagination.pageSize,
+          category: categoryFilter || undefined,
           q: search || undefined,
         },
       });
@@ -80,36 +95,67 @@ export const ItemsTable = () => {
     []
   );
 
+  const onColumnFiltersChange: OnChangeFn<ColumnFiltersState> = (updater) => {
+    const next =
+      typeof updater === 'function' ? updater(columnFilters) : updater;
+    setColumnFilters(next);
+
+    const patch: Record<string, unknown> = {};
+
+    for (const cfg of columnFiltersCfg) {
+      const found = next.find((f) => f.id === cfg.columnId);
+
+      if (cfg.type === 'string') {
+        const value =
+          typeof found?.value === 'string' ? found.value.trim() : '';
+        patch[cfg.searchKey] = value || undefined;
+      } else if (cfg.type === 'array') {
+        const value = Array.isArray(found?.value)
+          ? found.value
+          : found?.value
+          ? [found.value]
+          : [];
+        patch[cfg.searchKey] = value.length > 0 ? value : undefined;
+      }
+    }
+  };
+
   const table = useReactTable({
     data: data?.data ?? [],
     columns,
     pageCount: data?.meta.totalPages,
-    state: { pagination },
+    state: {
+      pagination,
+      globalFilter: search,
+      columnFilters,
+    },
     onPaginationChange: setPagination,
+    onGlobalFilterChange: setSearch,
+    onColumnFiltersChange,
     getCoreRowModel: getCoreRowModel(),
-    manualPagination: true, // tell RT we control pagination
+    manualPagination: true,
+    manualFiltering: true,
   });
 
   return (
     <>
-      <div className="flex items-center justify-between px-4 pt-6 gap-x-3">
-        <div className="flex items-center gap-x-3">
-          <div className="flex gap-x-3">
-            <SelectDropdown
-              defaultValue={statuses[0]}
-              options={statuses}
-              placeholder="Status"
-            />
-            <SelectDropdown
-              defaultValue={categories[4]}
-              options={categories}
-              placeholder="Categories"
-            />
-          </div>
-        </div>
+      <div className="flex items-center justify-between px-4 py-6 gap-x-3">
+        <DataTableToolbar
+          table={table}
+          searchPlaceholder="Filter by name..."
+          filters={[
+            {
+              columnId: 'category',
+              title: 'Category',
+              options: categories.map((category) => ({
+                label: category,
+                value: category,
+              })),
+            },
+          ]}
+        />
         <div className="flex items-center gap-x-3">
           <Button variant="outline">Import</Button>
-          <Button variant="outline">Export</Button>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button size="icon" variant="outline" className="rounded-full">
@@ -121,21 +167,6 @@ export const ItemsTable = () => {
             </TooltipContent>
           </Tooltip>
         </div>
-      </div>
-
-      <div className="p-4">
-        <label className="flex items-center w-full space-x-2.5">
-          <SearchIcon className="shrink-0 w-5 h-5 text-muted-foreground" />
-          <input
-            placeholder="Search"
-            value={search}
-            onChange={(e) => {
-              setPagination({ ...pagination, pageIndex: 0 }); // reset to page 1
-              setSearch(e.target.value);
-            }}
-            className="bg-transparent py-2 focus:outline-none"
-          />
-        </label>
       </div>
 
       <Table>
@@ -154,15 +185,23 @@ export const ItemsTable = () => {
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No results.
+              </TableCell>
             </TableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
       <DataTablePagination table={table} />
