@@ -21,7 +21,7 @@ export const authHandlers = [
 
       return HttpResponse.json(result, {
         headers: {
-          // with a real API servier, the token cookie should also be Secure and HttpOnly
+          // with a real API server, the token cookie should also be Secure and HttpOnly
           'Set-Cookie': `${AUTH_COOKIE}=${result.jwt}; Path=/;`,
         },
       });

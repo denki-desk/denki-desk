@@ -87,8 +87,26 @@ export function requireAuth(cookies: Record<string, string>) {
   }
 }
 
-export function requireAdmin(user: any) {
-  if (user.role !== 'ADMIN') {
-    throw Error('Unauthorized');
+export function getAsString(value: string | readonly string[] | null) {
+  if (Array.isArray(value)) {
+    return value[0];
   }
+
+  return value;
+}
+
+export function getValueString(value: string | readonly string[] | null) {
+  const str = getAsString(value);
+  return !str ? null : str;
+}
+
+export function getValueNumber(value: string | readonly string[] | null) {
+  const str = getValueString(value);
+
+  if (str === null) {
+    return null;
+  }
+
+  const number = parseInt(str, 10);
+  return isNaN(number) ? null : number;
 }

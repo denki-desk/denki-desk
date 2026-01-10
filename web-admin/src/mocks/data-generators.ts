@@ -1,13 +1,25 @@
 import {
   randEmail,
+  randNumber,
   randPassword,
   randPhoneNumber,
+  rand,
+  randProductName,
+  randSentence,
   randUserName,
   randUuid,
 } from '@ngneat/falso';
-import { User } from '../types';
+import { Item, User } from '../types';
 
 export type Overrides<T> = Partial<T>;
+
+export const categories = [
+  'Shoes',
+  'Clothes',
+  'Accessories',
+  'Electronics',
+  'Other',
+];
 
 export const generateUser = (overrides?: Overrides<User>) => ({
   id: randUuid() + Math.random(),
@@ -20,5 +32,15 @@ export const generateUser = (overrides?: Overrides<User>) => ({
   phone: randPhoneNumber(),
   createdAt: Date.now(),
   updatedAt: Date.now(),
+  ...overrides,
+});
+
+export const generateItem = (overrides?: Overrides<Item>) => ({
+  id: randUuid() + Math.random(),
+  storeId: randEmail() + Math.random(),
+  name: randProductName(),
+  category: rand(categories),
+  basePrice: randNumber({ min: 5, max: 1000 }),
+  description: randSentence(),
   ...overrides,
 });
