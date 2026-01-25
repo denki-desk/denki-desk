@@ -62,3 +62,6 @@ apps/**/.env.*.local
 # Allow non-sensitive templates
 !.env.example
 !apps/**/.env.example
+
+# Playwright authenticated browser state (generated locally)
+/web-admin-e2e/playwright/.auth/
